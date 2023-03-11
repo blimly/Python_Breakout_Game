@@ -25,15 +25,15 @@ class Ball:
         self.game = game
         self.vx = vx
         self.vy = vy
-        self.radius = 20
+        self.radius = 5
         self.colour = (0, 255, 0)
 
     def draw(self, screen):
         pygame.draw.circle(screen, self.colour, (self.x, self.y), self.radius)
 
     def update(self):
-        self.move()
         self.handle_collision()
+        self.move()
 
     def move(self):
         self.x += self.vx
@@ -45,6 +45,13 @@ class Ball:
         at_paddle = self.game.paddle.location - self.game.paddle.width / 2 < self.x < self.game.paddle.location + self.game.paddle.width / 2
         if self.y < self.radius or self.y > self.game.height - self.radius - self.game.paddle.height and at_paddle:
             self.horizontal_collision()
+        for brick in self.game.bricks:
+            if not brick.alive:
+                continue
+            collides = brick.x - self.radius < self.x < brick.x + brick.w + self.radius and brick.y - self.radius < self.y < brick.y + brick.h + self.radius
+            if collides:
+                brick.alive = False
+                self.horizontal_collision()
 
     def vertical_collision(self):
         self.vx = - self.vx
@@ -54,13 +61,20 @@ class Ball:
 
 
 class Brick:
-    def __init__(self, x, y, w, h, colour):
+    def __init__(self, x, y, w, h, colour, game):
         self.x, self.y, self.w, self.h = x, y, w, h
         print(x, y, w, h)
         self.colour = colour
+        self.alive = True
+        self.game = game
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.colour, (self.x, self.y, self.w, self.h))
+        if self.alive:
+            pygame.draw.rect(screen, self.colour, (self.x, self.y, self.w, self.h))
+
+    def check_collision(self):
+        if not self.alive:
+            return
 
 
 class Game:
@@ -77,9 +91,10 @@ class Game:
         self.paddle = Paddle((640 - 60) // 2, 20, 60, (150, 150, 255))
         self.ball = Ball(self.width // 2, self.height // 2, self, random.random() * 4 - 2, 8)
         self.bricks = []
-        for y in range(3):
+        for y in range(1):
             for x in range(10):
-                self.bricks.append(Brick(x * 64, y * 20, 64, 20, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))))
+                self.bricks.append(Brick(x * 64, y * 20, 64, 20, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), self))
+        self.state = "running"
 
     def input(self):
         for event in pygame.event.get():
@@ -97,8 +112,13 @@ class Game:
                     self.paddle.moving = 0
 
     def update(self):
-        self.paddle.move()
-        self.ball.update()
+        if self.state == "running":
+            self.paddle.move()
+            self.ball.update()
+            if self.ball.y > self.height:
+                self.state = "lost"
+            if not [x for x in self.bricks if x.alive]:
+                self.state = "won"
 
     def render(self):
         self.screen.fill(self.BACKGROUND_COLOUR)
@@ -107,6 +127,10 @@ class Game:
         for brick in self.bricks:
             # print("a")
             brick.draw(self.screen)
+        if self.state == "lost":
+            self.screen.fill((255, 0, 0))
+        if self.state == "won":
+            self.screen.fill((0, 255, 0))
         pygame.display.flip()
 
     def run(self):
