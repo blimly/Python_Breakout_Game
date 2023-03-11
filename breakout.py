@@ -5,6 +5,7 @@ import time
 
 class Game:
     def __init__(self):
+        # Test
         pygame.init()
         self.screen = pygame.display.set_mode((640, 480))
         pygame.display.set_caption("Breakout Game")
