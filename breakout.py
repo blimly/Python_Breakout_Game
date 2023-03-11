@@ -52,6 +52,17 @@ class Ball:
     def horizontal_collision(self):
         self.vy = - self.vy
 
+
+class Brick:
+    def __init__(self, x, y, w, h, colour):
+        self.x, self.y, self.w, self.h = x, y, w, h
+        print(x, y, w, h)
+        self.colour = colour
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.colour, (self.x, self.y, self.w, self.h))
+
+
 class Game:
     def __init__(self):
         # Test
@@ -64,7 +75,11 @@ class Game:
         self.tick_length = 1 / 30
         self.BACKGROUND_COLOUR = (20, 20, 50)
         self.paddle = Paddle((640 - 60) // 2, 20, 60, (150, 150, 255))
-        self.ball = Ball(self.width // 2, self.height // 2, self, random.random() * 4 - 2, 10)
+        self.ball = Ball(self.width // 2, self.height // 2, self, random.random() * 4 - 2, 8)
+        self.bricks = []
+        for y in range(3):
+            for x in range(10):
+                self.bricks.append(Brick(x * 64, y * 20, 64, 20, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))))
 
     def input(self):
         for event in pygame.event.get():
@@ -89,6 +104,9 @@ class Game:
         self.screen.fill(self.BACKGROUND_COLOUR)
         self.paddle.draw(self.screen)
         self.ball.draw(self.screen)
+        for brick in self.bricks:
+            # print("a")
+            brick.draw(self.screen)
         pygame.display.flip()
 
     def run(self):
