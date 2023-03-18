@@ -34,44 +34,44 @@ class Ball:
         pygame.draw.circle(screen, self.colour, (self.x, self.y), self.radius)
 
     def update(self):
-        self.handle_collision()
         self.move()
+        self.handle_collision()
 
     def move(self):
         self.x += self.vx
         self.y += self.vy
 
     def handle_collision(self):
-        if self.x < self.radius or self.x > self.game.width - self.radius:
-            self.vertical_collision()
+        if self.x < self.radius:
+            self.vertical_collision(self.radius)
+        if self.x > self.game.width - self.radius:
+            self.vertical_collision(self.game.width - self.radius)
         at_paddle = self.game.paddle.location - self.game.paddle.width / 2 < self.x < self.game.paddle.location + self.game.paddle.width / 2
-        if self.y < self.radius or self.y > self.game.height - self.radius - self.game.paddle.height and at_paddle:
-            if self.x < self.game.paddle.location - self.game.paddle.width / 4:
-                self.vx = -abs(self.vx)
-            elif self.x > self.game.paddle.location + self.game.paddle.width / 4:
-                self.vx = abs(self.vx)
-            else:
-                self.vertical_collision()
-            self.horizontal_collision()
+        if self.y < self.radius:
+            self.horizontal_collision(self.radius)
+        if self.y > self.game.height - self.radius - self.game.paddle.height and at_paddle:
+            self.horizontal_collision(self.game.height - self.radius - self.game.paddle.height)
+            self.vx += self.game.paddle.moving * (2 + random.random())
         for brick in self.game.bricks:
             if not brick.alive:
                 continue
             collides = brick.x - self.radius < self.x < brick.x + brick.w + self.radius and brick.y - self.radius < self.y < brick.y + brick.h + self.radius
             if collides:
                 brick.alive = False
-                self.horizontal_collision()
+                self.horizontal_collision(brick.y + brick.h + self.radius)
 
-    def vertical_collision(self):
+    def vertical_collision(self, collision_line):
         self.vx = -(self.vx + random.uniform(-1, 1))
+        self.x = collision_line - (self.x - collision_line)
 
-    def horizontal_collision(self):
+    def horizontal_collision(self, collision_line):
         self.vy = -(self.vy + random.uniform(-1, 1))
+        self.y = collision_line - (self.y - collision_line)
 
 
 class Brick:
     def __init__(self, x, y, w, h, colour, game):
         self.x, self.y, self.w, self.h = x, y, w, h
-        print(x, y, w, h)
         self.colour = colour
         self.alive = True
         self.game = game
