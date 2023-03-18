@@ -15,7 +15,9 @@ class Paddle:
         pygame.draw.rect(screen, self.colour, (self.location - self.width // 2, 480 - self.height, self.width, self.height))
 
     def move(self):
-        self.location += 10 * self.moving
+        new_location = self.location + 10 * self.moving
+        if new_location - self.width // 2 >= 0 and new_location + self.width // 2 <= 640:
+            self.location = new_location
 
 
 class Ball:
@@ -44,6 +46,12 @@ class Ball:
             self.vertical_collision()
         at_paddle = self.game.paddle.location - self.game.paddle.width / 2 < self.x < self.game.paddle.location + self.game.paddle.width / 2
         if self.y < self.radius or self.y > self.game.height - self.radius - self.game.paddle.height and at_paddle:
+            if self.x < self.game.paddle.location - self.game.paddle.width / 4:
+                self.vx = -abs(self.vx)
+            elif self.x > self.game.paddle.location + self.game.paddle.width / 4:
+                self.vx = abs(self.vx)
+            else:
+                self.vertical_collision()
             self.horizontal_collision()
         for brick in self.game.bricks:
             if not brick.alive:
@@ -54,10 +62,10 @@ class Ball:
                 self.horizontal_collision()
 
     def vertical_collision(self):
-        self.vx = - self.vx
+        self.vx = -(self.vx + random.uniform(-1, 1))
 
     def horizontal_collision(self):
-        self.vy = - self.vy
+        self.vy = -(self.vy + random.uniform(-1, 1))
 
 
 class Brick:
@@ -88,13 +96,52 @@ class Game:
         self.running = True
         self.tick_length = 1 / 30
         self.BACKGROUND_COLOUR = (20, 20, 50)
-        self.paddle = Paddle((640 - 60) // 2, 20, 60, (150, 150, 255))
+        self.paddle = Paddle((640 - 60) // 2, 20, 60, (255, 255, 255))
         self.ball = Ball(self.width // 2, self.height // 2, self, random.random() * 4 - 2, 8)
         self.bricks = []
         for y in range(1):
             for x in range(10):
                 self.bricks.append(Brick(x * 64, y * 20, 64, 20, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), self))
         self.state = "running"
+        self.font = pygame.font.SysFont('Arial', 30)
+        self.text = self.font.render('TalTech INIT23', True, (227, 10, 127))
+        self.text_rect = self.text.get_rect(center=(self.width // 2, self.height // 2))
+
+    def set_state(self, state):
+        self.state = state
+        if state == 'won':
+            self.text = self.font.render('W', True, (255, 255, 255))
+            self.text_rect = self.text.get_rect(center=(self.width // 2, self.height // 2))
+        elif state == 'lost':
+            self.text = self.font.render('L', True, (255, 255, 255))
+            self.text_rect = self.text.get_rect(center=(self.width // 2, self.height // 2))
+        elif state == 'running':
+            self.text = self.font.render('TalTech INIT23', True, (227, 10, 127))
+            self.text_rect = self.text.get_rect(center=(self.width // 2, self.height // 2))
+
+    def draw(self):
+        self.screen.fill(self.BACKGROUND_COLOUR)  # clear the screen
+        for brick in self.bricks:
+            brick.draw(self.screen)
+        self.paddle.draw(self.screen)
+        self.ball.draw(self.screen)
+
+        if self.state == 'running':
+            self.screen.blit(self.text, self.text_rect)
+        elif self.state == 'won':
+            self.text = self.font.render('W', True, (0, 255, 0))
+            self.text_rect = self.text.get_rect(center=(self.width // 2, self.height // 2))
+            self.screen.blit(self.text, self.text_rect)
+            end_text = self.font.render(f"You {self.state}! Press \"R\" to try again.", True, (255, 255, 255))
+            self.screen.blit(end_text, (self.width // 2 - end_text.get_width() // 2, self.height // 2 + 40))
+        elif self.state == 'lost':
+            self.text = self.font.render('L', True, (255, 0, 0))
+            self.text_rect = self.text.get_rect(center=(self.width // 2, self.height // 2))
+            self.screen.blit(self.text, self.text_rect)
+            end_text = self.font.render(f"You {self.state}! Press \"R\" to try again.", True, (255, 255, 255))
+            self.screen.blit(end_text, (self.width // 2 - end_text.get_width() // 2, self.height // 2 + 40))
+
+        pygame.display.update()
 
     def input(self):
         for event in pygame.event.get():
@@ -107,40 +154,58 @@ class Game:
                     self.paddle.moving = -1
                 if event.key == pygame.K_d:
                     self.paddle.moving = 1
+                # Add this block to check for a key press to restart the game
+                if self.state in ["won", "lost"] and event.key == pygame.K_r:
+                    self.restart_game()
             if event.type == pygame.KEYUP:
                 if event.key in [pygame.K_a, pygame.K_d]:
                     self.paddle.moving = 0
+
+    def restart_game(self):
+        self.paddle = Paddle((640 - 60) // 2, 20, 60, (255, 255, 255))
+        self.ball = Ball(self.width // 2, self.height // 2, self, random.random() * 4 - 2, 8)
+        self.bricks = []
+        for y in range(1):
+            for x in range(10):
+                self.bricks.append(Brick(x * 64, y * 20, 64, 20,
+                                         (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),
+                                         self))
+        self.state = "running"
+        self.set_state('running')
+        self.text = self.font.render('TalTech INIT23', True, (227, 10, 127))
+        self.text_rect = self.text.get_rect(center=(self.width // 2, self.height // 2))
 
     def update(self):
         if self.state == "running":
             self.paddle.move()
             self.ball.update()
+
             if self.ball.y > self.height:
                 self.state = "lost"
-            if not [x for x in self.bricks if x.alive]:
+            elif all(brick.alive == False for brick in self.bricks):
                 self.state = "won"
 
+        self.draw()
+
     def render(self):
+        # Fill the screen with the background colour
         self.screen.fill(self.BACKGROUND_COLOUR)
+
+        # Render the bricks, paddle, and ball
+        for brick in self.bricks:
+            brick.draw(self.screen)
         self.paddle.draw(self.screen)
         self.ball.draw(self.screen)
-        for brick in self.bricks:
-            # print("a")
-            brick.draw(self.screen)
-        if self.state == "lost":
-            self.screen.fill((255, 0, 0))
-        if self.state == "won":
-            self.screen.fill((0, 255, 0))
-        pygame.display.flip()
 
     def run(self):
         while self.running:
-            start = time.time()
+            start_time = time.time()
             self.input()
             self.update()
-            self.render()
-            time.sleep(max(0, self.tick_length - (time.time() - start)))
-        pygame.quit()
+            self.draw()
+            elapsed_time = time.time() - start_time
+            if elapsed_time < self.tick_length:
+                pygame.time.wait(int((self.tick_length - elapsed_time) * 1000))
 
 
 game = Game()
