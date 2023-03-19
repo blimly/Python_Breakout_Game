@@ -1,63 +1,53 @@
-# Python Breakout Game 
+# Python Breakout Game
 A game to teach the basics of python using pygame for the TalTech Informatics event **>init**
 
 ## Basic tasks
 ### 🎨 Brick colors
-Change the color of the bricks depending on their position on the screen (e.g. gradient, random colors, etc.)
-
-### 📈 Multiple levels
-Create multiple levels with different brick layouts and varying levels of difficulty
-
-### 🚀 Power-ups
-Create power-ups that fall from destroyed bricks (e.g. extra ball, larger paddle, etc.)
+Change the color of the bricks depending on their position on the screen
 
 ### 🖼️ Background
 Add a custom background to the game (e.g. space, city skyline, etc.)
 
-### 📊 Score display
-Display the current score on the game screen
-
-## Intermediate tasks
 ### 🎵 Music and sound effects
 Add background music and sound effects for ball hits, brick breaks, and power-up pickups
 
-### 🕰️ Timer
-Add a timer to the game and display the time remaining on the screen
+### 📊 Score display
+Display the current score on the game screen
 
 ### 🌈 Colorful ball
 Make the ball change color randomly as it bounces around the screen
 
-### 🔥 Fireball power-up
-Create a power-up that turns the ball into a fireball, breaking multiple bricks in one hit
+## Intermediate tasks
+
+### 🕰️ Timer
+Add a timer to the game and display the time remaining on the screen
+
+### 📈 Multiple levels
+Create multiple levels with different brick layouts and varying levels of difficulty
 
 ### 🏆 High score board
 Add a high score board that displays the top scores achieved by players
 
+### 🏹 Laser paddle
+Add a laser to the paddle that can destroy bricks with a single hit
+
 ## Advanced tasks
-### 🏝️ Parallax scrolling
-Add parallax scrolling to the background to create a sense of depth and movement
 
 ### 💥 Explosive bricks
 Create bricks that explode on impact, destroying neighboring bricks
 
-### 🌀 Wind power-up
-Create a power-up that creates a gust of wind, changing the direction of the ball's movement
-
-### 🏹 Laser paddle
-Add a laser to the paddle that can destroy bricks with a single hit
+### 🚀 Power-ups
+Create power-ups that fall from destroyed bricks (e.g. extra ball, larger paddle, etc.)
 
 ### 🌟 Star field
 Create a star field in the background that moves independently of the game objects
 
+### 🎆 Fireworks
+Create a fireworks display at the end of each level
+
 ## Expert tasks
 ### 🌊 Water level
 Create a water level where the ball moves more slowly and can be affected by waves and currents
-
-### 🛡️ Shield power-up
-Create a power-up that gives the player a temporary shield, allowing them to bounce the ball off the shield without losing a life
-
-### 🎆 Fireworks
-Create a fireworks display at the end of each level
 
 ### 📜 Storyline
 Create a storyline that ties the levels together and gives players a sense of progression
@@ -66,11 +56,8 @@ Create a storyline that ties the levels together and gives players a sense of pr
 ### 🎥 Replay feature
 Add a replay feature that shows the player's best performance in a cinematic way
 
-### 🐉 Dragon power-up
-Create a power-up that turns the ball into a dragon, destroying all bricks in its path
-
 ### 🧊 Ice level
-Create an ice-themed level with slippery surfaces that affect the ball's movement
+Create an ice-themed level with slippery surfaces (paddle movement slippery)
 
 ### 🤖 Robot boss
 Create a robot-themed boss level with a unique and challenging robot boss
@@ -78,14 +65,14 @@ Create a robot-themed boss level with a unique and challenging robot boss
 ### 🎨 Art style challenge
 Create a unique art style for your Breakout game and implement it throughout the game
 
---- 
+---
 
 ## Helpful links
 
 ### Pygame tutorials and documentation:
 - [Pygame Documentation](https://www.pygame.org/docs/) - the official documentation for Pygame with guides, examples, and reference materials
 - [Invent with Python](https://inventwithpython.com/pygame/) - a beginner-friendly Pygame tutorial series that covers the basics of game programming with Pygame
-- [Pygame Cheat Sheet](https://www.pygame.org/docs/_static/pygame-cheatsheet.pdf) - a handy reference sheet with Pygame functions and examples
+- [Pygame Cheat Sheet](https://canberragpn.github.io/static/doc/PygameCheatSheet.pdf) - a handy reference sheet with Pygame functions and examples
 - [Pygame Examples](https://www.pygame.org/tags/examples) - a collection of Pygame examples that demonstrate how to implement various game mechanics and features
 
 ### Simple game making tools:
@@ -95,9 +82,8 @@ Create a unique art style for your Breakout game and implement it throughout the
 - [itch.io](https://itch.io/game-development) - a platform for indie game developers that includes game development tools and resources, as well as a marketplace for selling and sharing games
 
 ### Sound making:
-- [Audacity](https://www.audacityteam.org/) - a free and open-source audio editing software that can be used online through a browser
-- [Bfxr](https://www.bfxr.net/) - a free online tool for generating sound effects for games
-- [sfxr](https://sfxr.me/)
+- [Audacity](https://www.audacityteam.org/) - a free and open-source audio editing software
+- [sfxr](https://sfxr.me/) - a free tool for generating sound effects for games
 - [beepbox](https://www.beepbox.co/)
 
 ### Image creation:
@@ -108,4 +94,3 @@ Create a unique art style for your Breakout game and implement it throughout the
 ---
 # Ya boi
 ![ya boy](https://martkaasik.net/sendnudes.jpg)
-
